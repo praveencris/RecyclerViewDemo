@@ -16,7 +16,7 @@
         android:layout_height="match_parent">
 
         <TextView
-            android:id="@+id/alphabateText"
+            android:id="@+id/numberText"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginEnd="16dp"
@@ -28,7 +28,7 @@
             app:layout_constraintEnd_toStartOf="@+id/addImv"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:text="A" />
+            tools:text="1" />
 
         <ImageView
             android:id="@+id/addImv"
