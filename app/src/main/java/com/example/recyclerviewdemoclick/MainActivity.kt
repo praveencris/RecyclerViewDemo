@@ -1,14 +1,15 @@
 package com.example.recyclerviewdemoclick
 
 import android.os.Bundle
-import android.util.Log
+import android.view.Menu
+import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.*
 import com.example.recyclerviewdemoclick.adapter.NumberAdapter
 import com.example.recyclerviewdemoclick.databinding.ActivityMainBinding
 import com.google.android.material.snackbar.Snackbar
+
 
 class MainActivity : AppCompatActivity(), NumberAdapter.OnClickListener {
     private lateinit var binding: ActivityMainBinding
@@ -20,22 +21,80 @@ class MainActivity : AppCompatActivity(), NumberAdapter.OnClickListener {
         numberAdapter = NumberAdapter(R.layout.list_item_alphabate, this)
         val layoutManager = LinearLayoutManager(this, RecyclerView.VERTICAL, false)
         binding.recyclerView.layoutManager = layoutManager
-        binding.recyclerView.adapter=numberAdapter
-        val list= (1..20).toMutableList()
+        binding.recyclerView.adapter = numberAdapter
+        val list = (1..21).toMutableList()
 
-        numberAdapter.numbersList=list
+        numberAdapter.numbersList = list
+
+
+        val itemTouchHelperSimpleCallback: ItemTouchHelper.SimpleCallback = object :
+            ItemTouchHelper.SimpleCallback(
+                0,
+                ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT
+                        or ItemTouchHelper.UP or ItemTouchHelper.DOWN
+            ) {
+
+            override fun onMove(
+                recyclerView: RecyclerView,
+                viewHolder: RecyclerView.ViewHolder,
+                target: RecyclerView.ViewHolder
+            ): Boolean {
+                TODO("Not yet implemented")
+            }
+
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+
+                        numberAdapter.numbersList.removeAt(viewHolder.adapterPosition)
+                        numberAdapter.notifyDataSetChanged()
+
+
+            }
+
+        }
+        val touchHelper = ItemTouchHelper(itemTouchHelperSimpleCallback)
+        touchHelper.attachToRecyclerView(binding.recyclerView)
+
     }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu, menu)
+        return true;
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        val list = numberAdapter.numbersList;
+        binding.recyclerView.layoutManager = when (item.itemId) {
+            R.id.linear_view -> {
+                numberAdapter = NumberAdapter(R.layout.list_item_alphabate, this)
+                LinearLayoutManager(this, RecyclerView.VERTICAL, false)
+            }
+            R.id.grid_view -> {
+                numberAdapter = NumberAdapter(R.layout.list_item_number_grid, this)
+                GridLayoutManager(this, 2, RecyclerView.VERTICAL, false)
+            }
+            R.id.staggered_view -> {
+                numberAdapter = NumberAdapter(R.layout.list_item_number_grid, this)
+                StaggeredGridLayoutManager(2, RecyclerView.VERTICAL)
+            }
+            else -> LinearLayoutManager(this, RecyclerView.VERTICAL, false)
+        }
+
+        binding.recyclerView.adapter = numberAdapter
+        numberAdapter.numbersList = list
+        return true
+    }
+
 
     override fun onAddClick(position: Int) {
         val list = numberAdapter.numbersList;
-        list[position]=list[position] + 1
+        list[position] = list[position] + 1
         numberAdapter.numbersList = list
         binding.recyclerView.scrollToPosition(position)
     }
 
     override fun onResetClick(position: Int) {
         val list = numberAdapter.numbersList;
-        list[position]=0
+        list[position] = 0
         numberAdapter.numbersList = list
         binding.recyclerView.scrollToPosition(position)
     }
