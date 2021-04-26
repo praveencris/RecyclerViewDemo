@@ -3,6 +3,7 @@ package com.example.recyclerviewdemoclick
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.*
@@ -43,10 +44,16 @@ class MainActivity : AppCompatActivity(), NumberAdapter.OnClickListener {
             }
 
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                val currentList = mutableListOf<Int>()
+                currentList.addAll(numberAdapter.numbersList)
+                numberAdapter.numbersList.removeAt(viewHolder.adapterPosition)
+                numberAdapter.notifyDataSetChanged()
 
-                        numberAdapter.numbersList.removeAt(viewHolder.adapterPosition)
+                Snackbar.make(binding.root, "Deleted by mistake!", Snackbar.LENGTH_INDEFINITE)
+                    .setAction("Undo", View.OnClickListener {
+                        numberAdapter.numbersList = currentList
                         numberAdapter.notifyDataSetChanged()
-
+                    }).show()
 
             }
 
