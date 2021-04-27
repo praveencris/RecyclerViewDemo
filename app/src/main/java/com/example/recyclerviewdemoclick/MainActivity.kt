@@ -23,7 +23,7 @@ class MainActivity : AppCompatActivity() ,NumberAdapter.ClickListener{
         binding.recyclerView.layoutManager = layoutManager
 
         val numbersList = (1..20).toMutableList()
-        numberAdapter.numberList = numbersList
+        numberAdapter.submitList(numbersList)
 
 
         val itemTouchSimpleHelper= object : ItemTouchHelper.SimpleCallback(
@@ -38,9 +38,10 @@ class MainActivity : AppCompatActivity() ,NumberAdapter.ClickListener{
             }
 
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-                numberAdapter.numberList.removeAt(viewHolder.adapterPosition)
-                numberAdapter.notifyDataSetChanged()
-            }
+                val list:MutableList<Int> = numberAdapter.currentList.toMutableList()
+                list.removeAt(viewHolder.adapterPosition)
+                numberAdapter.submitList(list)
+      }
 
         }
 
@@ -56,7 +57,7 @@ class MainActivity : AppCompatActivity() ,NumberAdapter.ClickListener{
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        val list=numberAdapter.numberList
+        val list=numberAdapter.currentList
         binding.recyclerView.layoutManager = when (item.itemId) {
             R.id.linear_view -> {
                 numberAdapter=NumberAdapter(R.layout.list_item_alphabate,this)
@@ -76,21 +77,23 @@ class MainActivity : AppCompatActivity() ,NumberAdapter.ClickListener{
         }
 
         binding.recyclerView.adapter=numberAdapter
-        numberAdapter.numberList=list
+        numberAdapter.submitList(list)
         return true
     }
 
     override fun addClicked(position: Int) {
-        numberAdapter.numberList[position]=(numberAdapter.numberList[position]+1)
-        numberAdapter.notifyDataSetChanged()
+        val list=numberAdapter.currentList.toMutableList()
+        list[position]=list[position]+1
+        numberAdapter.submitList(list)
     }
 
     override fun resetClicked(position: Int) {
-        numberAdapter.numberList[position]=0
-        numberAdapter.notifyDataSetChanged()
+        val list=numberAdapter.currentList.toMutableList()
+        list[position]=0
+        numberAdapter.submitList(list)
     }
 
     override fun textClicked(position: Int) {
-        Snackbar.make(binding.root, "Number clicked: ${numberAdapter.numberList[position]}",Snackbar.LENGTH_SHORT).show()
+        Snackbar.make(binding.root, "Number clicked: ${numberAdapter.currentList[position]}",Snackbar.LENGTH_SHORT).show()
     }
 }
