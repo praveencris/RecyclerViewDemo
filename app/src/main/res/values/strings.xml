@@ -6,4 +6,8 @@
     <string name="grid_view">Grid View</string>
     <string name="linear_view">Linear View</string>
     <string name="staggered_view">Staggered View</string>
+    <string name="first">First</string>
+    <string name="second">Second</string>
+    <string name="third">Third</string>
+    <string name="fourth">Fourth</string>
 </resources>

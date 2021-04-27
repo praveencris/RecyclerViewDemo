@@ -10,32 +10,35 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.recyclerviewdemoclick.R
 
-class NumberAdapter(val layoutId: Int, val clickListener: ClickListener) :
+class NumberAdapter(private val layoutId: Int, private val clickListener: ClickListener) :
     ListAdapter<Int,NumberAdapter.ViewHolder>(DiffUtilNumberCallBack()) {
 
-    class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    class ViewHolder(itemView: View,clickListener: ClickListener) : RecyclerView.ViewHolder(itemView) {
         val itemText = itemView.findViewById<TextView>(R.id.numberText)
         val imvAdd = itemView.findViewById<ImageView>(R.id.addImv)
         val imvReset = itemView.findViewById<ImageView>(R.id.resetImv)
 
-        fun bind(item: Int, clickListener: ClickListener) {
-            itemText.text = item.toString()
+        init {
             itemText.setOnClickListener {
                 clickListener.textClicked(adapterPosition)
             }
             imvAdd.setOnClickListener {
-                clickListener.addClicked(adapterPosition)
+                itemText.text= (itemText.text.toString().toInt()+1).toString()
             }
             imvReset.setOnClickListener {
-                clickListener.resetClicked(adapterPosition)
-            }
+                itemText.text= 0.toString()
+             }
+        }
+
+        fun bind(item: Int) {
+            itemText.text = item.toString()
         }
 
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(layoutId, parent, false)
-        return ViewHolder(view)
+        return ViewHolder(view,clickListener)
     }
 
     override fun getItemCount(): Int {
@@ -44,13 +47,13 @@ class NumberAdapter(val layoutId: Int, val clickListener: ClickListener) :
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = currentList[position]
-        holder.bind(item, clickListener)
+        holder.bind(item)
     }
 
 
     interface ClickListener {
-        fun addClicked(position: Int)
-        fun resetClicked(position: Int)
+      /*  fun addClicked(position: Int)
+        fun resetClicked(position: Int)*/
         fun textClicked(position: Int)
     }
 
