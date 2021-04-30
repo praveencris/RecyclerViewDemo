@@ -1,6 +1,8 @@
 package com.example.recyclerviewdemoclick
 
+import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -109,5 +111,43 @@ class MainActivity : AppCompatActivity(), NumberAdapter.OnClickListener {
     override fun onTextClick(position: Int) {
         val list = numberAdapter.numbersList;
         Snackbar.make(binding.root, "Item Clicked ${list[position]}", Snackbar.LENGTH_SHORT).show()
+        startActivityForResult(DetailActivity.getIntent(position, list[position], this), RQ_DETAIL)
+    }
+
+    companion object {
+        val RQ_DETAIL = 1
+        private val EXTRA_POSITION = "POSITION"
+        private val EXTRA_DATA = "DATA"
+        fun getIntent(position: Int?, dataItem: Int?): Intent {
+            val intent = Intent()
+            intent.putExtra(EXTRA_POSITION, position)
+            intent.putExtra(EXTRA_DATA, dataItem)
+            return intent
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == RQ_DETAIL) {
+          if(resultCode== RESULT_OK){
+              data?.let {
+                  val position = data.extras?.getInt(EXTRA_POSITION)
+                  val dataItem = data.extras?.getInt(EXTRA_DATA)
+                  Log.d("MainActivity", "Result $position::$dataItem")
+
+                  dataItem?.let {
+                      position?.let {
+                          val list = numberAdapter.numbersList;
+                          list[position] = dataItem
+                          numberAdapter.numbersList = list
+                          binding.recyclerView.scrollToPosition(position)
+                      }
+
+                  }
+
+              }
+          }
+
+        }
     }
 }

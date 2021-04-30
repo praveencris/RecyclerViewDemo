@@ -6,7 +6,7 @@
         android:id="@+id/linear_view"
         android:icon="@drawable/ic_baseline_linear_list_24"
         android:title="@string/linear_view"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="never" />
     <item
         android:id="@+id/grid_view"
         android:icon="@drawable/ic_baseline_grid_view_24"
