@@ -11,6 +11,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.*
 import com.example.recyclerviewdemoclick.adapter.NumberAdapter
 import com.example.recyclerviewdemoclick.databinding.ActivityMainBinding
+import com.example.recyclerviewdemoclick.models.Item
 import com.google.android.material.snackbar.Snackbar
 
 
@@ -111,17 +112,16 @@ class MainActivity : AppCompatActivity(), NumberAdapter.OnClickListener {
     override fun onTextClick(position: Int) {
         val list = numberAdapter.numbersList;
         Snackbar.make(binding.root, "Item Clicked ${list[position]}", Snackbar.LENGTH_SHORT).show()
-        startActivityForResult(DetailActivity.getIntent(position, list[position], this), RQ_DETAIL)
+        val item: Item = Item(position,list[position])
+        startActivityForResult(DetailActivity.getIntent(item, this), RQ_DETAIL)
     }
 
     companion object {
         val RQ_DETAIL = 1
-        private val EXTRA_POSITION = "POSITION"
-        private val EXTRA_DATA = "DATA"
-        fun getIntent(position: Int?, dataItem: Int?): Intent {
+        private val EXTRA_ITEM = "EXTRA_ITEM"
+        fun getIntent(item:Item): Intent {
             val intent = Intent()
-            intent.putExtra(EXTRA_POSITION, position)
-            intent.putExtra(EXTRA_DATA, dataItem)
+            intent.putExtra(EXTRA_ITEM, item)
             return intent
         }
     }
@@ -131,16 +131,15 @@ class MainActivity : AppCompatActivity(), NumberAdapter.OnClickListener {
         if (requestCode == RQ_DETAIL) {
           if(resultCode== RESULT_OK){
               data?.let {
-                  val position = data.extras?.getInt(EXTRA_POSITION)
-                  val dataItem = data.extras?.getInt(EXTRA_DATA)
-                  Log.d("MainActivity", "Result $position::$dataItem")
+                  val item = data.extras?.getParcelable<Item>(EXTRA_ITEM) as Item
+                  Log.d("MainActivity", "Result ${item.position}::${item.dataItem}")
 
-                  dataItem?.let {
-                      position?.let {
+                  item.dataItem.let {
+                      item.position.let {
                           val list = numberAdapter.numbersList;
-                          list[position] = dataItem
+                          list[item.position] = item.dataItem
                           numberAdapter.numbersList = list
-                          binding.recyclerView.scrollToPosition(position)
+                          binding.recyclerView.scrollToPosition(item.position)
                       }
 
                   }
