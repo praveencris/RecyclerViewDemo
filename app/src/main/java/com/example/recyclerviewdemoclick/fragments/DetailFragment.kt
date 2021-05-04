@@ -1,13 +1,14 @@
 package com.example.recyclerviewdemoclick.fragments
 
-import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import com.example.recyclerviewdemoclick.MainActivity
 import com.example.recyclerviewdemoclick.R
 import com.example.recyclerviewdemoclick.databinding.FragmentDetailBinding
 import com.example.recyclerviewdemoclick.models.Item
@@ -51,7 +52,11 @@ class DetailFragment : Fragment() {
         binding.doneButton.setOnClickListener {
             item.dataItem = binding.number1Text.text.toString().toInt()
             (targetFragment as? MainFragment)?.setItem(item)
-            activity?.supportFragmentManager?.popBackStackImmediate()
+            if ((activity as? MainActivity)?.findViewById<FrameLayout>(R.id.detail_container) != null) {
+
+            } else {
+                activity?.supportFragmentManager?.popBackStackImmediate()
+            }
 
         }
         return binding.root

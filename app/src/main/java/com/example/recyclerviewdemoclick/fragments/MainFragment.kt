@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.*
@@ -145,7 +146,11 @@ class MainFragment : Fragment(), NumberAdapter.OnClickListener {
         val tag = DetailFragment::class.java.simpleName
 
         detailFragment.setTargetFragment(this, ITEM_REQUEST_CODE)
-        (activity as? MainActivity)?.replace(detailFragment, tag)
+        (activity as? MainActivity)?.findViewById<FrameLayout>(R.id.detail_container)?.let {
+            (activity as? MainActivity)?.replace(detailFragment, tag,R.id.detail_container)
+            return
+        }
+        (activity as? MainActivity)?.replace(detailFragment, tag,R.id.container)
     }
 
     override fun onResume() {
@@ -187,6 +192,14 @@ class MainFragment : Fragment(), NumberAdapter.OnClickListener {
 
     fun setItem(item: Item) {
         this.item = item
+        (activity as? MainActivity)?.findViewById<FrameLayout>(R.id.detail_container)?.let {
+            item.let {
+                val newList = numberAdapter.numbersList;
+                newList[item.position] = item.dataItem
+                numberAdapter.numbersList = newList
+                binding.recyclerView.scrollToPosition(item.position)
+            }
+        }
     }
 
 }
