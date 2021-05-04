@@ -26,7 +26,7 @@ class DetailActivity : AppCompatActivity() {
         }
         binding.doneButton.setOnClickListener {
             item.dataItem=binding.number1Text.text.toString().toInt()
-            setResult(RESULT_OK, MainActivity.getIntent(item))
+            //setResult(RESULT_OK, MainActivity.getIntent(item))
             finish()
         }
     }
